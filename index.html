@@ -332,8 +332,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 </section>
 <footer class="foot">
-  <div class="logos">
+  <div class="logos" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
+    
+    <!-- Left side -->
     <span class="logo-pill">
+      This website was created by
       <a href="https://ashley-pettit.github.io/CareConnect/">
         <svg class="logo" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:middle;margin-right:8px">
           <defs>
@@ -348,6 +351,19 @@ document.addEventListener('DOMContentLoaded', () => {
         CareConnect
       </a>
     </span>
+
+    <!-- Right side -->
+    <span style="text-align:right;">
+      Dr&nbsp;Jonathan&nbsp;Quinn • All rights reserved © <span id="year"></span>
+    </span>
+
+  </div>
+</footer>
+
+<script>
+  // Auto year
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
     
     <span text-align:right;">
       Dr&nbsp;Jonathan&nbsp;Quinn • All rights reserved © 2025
