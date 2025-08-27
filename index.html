@@ -132,7 +132,18 @@
 
   .btn, .btn.primary { padding: 12px 16px; font-size: 16px; border-radius: 14px; }
 
-  footer .foot { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .foot {
+    background: #f8f9fa;
+    border-top: 1px solid #ddd;
+    padding: 15px 20px;
+  }
+  .footer-content {
+    display: flex;
+    justify-content: space-between; /* pushes pills apart */
+    align-items: center;
+    flex-wrap: wrap; /* stacks neatly on mobile */
+    gap: 10px;
+  }
 }
 
 @media (min-width: 641px) and (max-width: 980px) {
@@ -332,11 +343,12 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 </section>
 <footer class="foot">
-  <div class="logos" style="display:flex; justify-content:center; align-items:center;">
+  <div class="footer-content">
     
+    <!-- Left pill -->
     <span class="logo-pill" style="display:flex; align-items:center; gap:10px; padding:8px 16px; border-radius:50px; background:#f0f0f0;">
       <a href="https://ashley-pettit.github.io/CareConnect/" style="display:flex; align-items:center; text-decoration:none; color:#1E6D83; font-weight:bold;">
-        <svg class="logo" width="40" height="40" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:middle;margin-right:6px">
+        <svg class="logo" width="28" height="28" viewBox="0 0 64 64" aria-hidden="true" style="vertical-align:middle;margin-right:6px">
           <defs>
             <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
               <stop offset="0" stop-color="#1E6D83"/>
@@ -348,9 +360,13 @@ document.addEventListener('DOMContentLoaded', () => {
         </svg>
         CareConnect
       </a>
-      <span style="color:#333; font-size:12px;"><div>
-        Dr Jonathan Quinn © <span id="year"></span>
-      </span></div>
+    </span>
+
+    <!-- Right pill -->
+    <span class="logo-pill" style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:50px; background:#f0f0f0;">
+      <span style="color:#333; font-size:14px;">
+        Dr&nbsp;Jonathan&nbsp;Quinn • All rights reserved © <span id="year"></span>
+      </span>
     </span>
 
   </div>
