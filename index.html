@@ -140,7 +140,6 @@
 }
 
 
-/* --- Base fixes for nav duplication --- */
 .mobile-menu { display: none; }           /* hidden by default (desktop) */
 .mobile-menu-toggle { display: none; }    /* toggle hidden on desktop */
 
@@ -149,25 +148,14 @@
   /* .mobile-menu.show handled below or already present */
 }
 
-/* --- Ashley request: make burger lines slightly thicker (mobile) --- */
 @media (max-width: 640px){
   .mobile-menu-toggle { font-weight: 900; }
 }
 
-
-/* --- Ashley request: add 5px space under "View locations" button on mobile --- */
-@media (max-width: 640px){
-  .btn.view-locations { margin-bottom: 5px !important; }
-}
+  .btn.view-locations {display: inline-block; }
 
 
-/* Mobile-only: add space ABOVE the 'View location(s)' button */
-@media (max-width: 640px){
-  .btn.view-locations { margin-top: 5px !important; display: inline-block; }
-}
 
-
-/* Mobile-only: 5px left margin on hero */
 @media (max-width: 640px){
   .hero, .hero-section, .hero__section, .hero-banner, #hero, [data-hero], section[aria-label*="hero" i] {
     margin-left: 5px !important;
@@ -232,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <body data-gr-ext-installed="" data-new-gr-c-s-check-loaded="14.1120.1">
 <nav aria-label="Primary" class="top">
 <div class="container">
-<button aria-expanded="false" aria-label="Open menu" class="mobile-menu-toggle">☰</button><div class="nav-links">
+<button aria-expanded="false" aria-label="Open menu" class="mobile-menu-toggle"><svg width="22" height="16" viewBox="0 0 22 16" aria-hidden="true"><rect x="0" y="0"  width="22" height="2" rx="1"></rect><rect x="0" y="7"  width="22" height="2" rx="1"></rect><rect x="0" y="14" width="22" height="2" rx="1"></rect></svg></button><div class="nav-links">
 <a href="https://ashley-pettit.github.io/JonQ/#overview">
       Overview
      </a>
@@ -338,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
      Contact &amp; Referrals
     </h2>
 <p style="">
-     For appointments or referrals, please contact the consulting rooms at Queen Elizabeth II Jubilee Hospital (QLD).<br/></p>
+     For appointments or referrals, please contact the consulting rooms at Queen Elizabeth II Jubilee Hospital (QLD).</p>
 <a aria-label="View locations" class="btn" href="#locations">
       View location
      </a>
@@ -354,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </svg>
             CareConnect
           </a>
-<small>© <span id="y">2025</span> For Dr Jonathan Quinn</small>
+<small>© <span id="year">2025</span> For Dr Jonathan Quinn</small>
 </div>
 </footer>
 <script>
@@ -546,4 +534,33 @@ document.addEventListener('DOMContentLoaded', function(){
       div.grammarly-desktop-integration:before {
         content: attr(data-content);
       }
-    </style><div aria-label="grammarly-integration" class="grammarly-desktop-integration" data-content='{"mode":"limited","isActive":false,"isUserDisabled":false}' role="group" tabindex="-1"></div></template></grammarly-desktop-integration></html>
+    
+/* === Burger menu SVG (Option 2) — added by ChatGPT === */
+.mobile-menu-toggle{
+  width: 44px;             /* Apple HIG touch target */
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.mobile-menu-toggle svg{ 
+  display: block;
+  width: 22px;
+  height: 16px;
+}
+.mobile-menu-toggle svg rect{
+  width: 22px;
+  height: 2px;
+  rx: 1;
+}
+.mobile-menu-toggle:active svg rect{
+  height: 3px;             /* subtle tactile feel on tap */
+}
+@media (max-width: 640px){
+  .mobile-menu-toggle{ width: 44px; height: 44px; }
+}
+
+/* === Burger lines color override === */
+.mobile-menu-toggle svg rect{ fill:#ffffff; }
+</style><div aria-label="grammarly-integration" class="grammarly-desktop-integration" data-content='{"mode":"limited","isActive":false,"isUserDisabled":false}' role="group" tabindex="-1"></div></template></grammarly-desktop-integration></html>
