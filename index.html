@@ -196,6 +196,13 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
   [id] { scroll-margin-top: 88px; }
 }
 
+
+/* Prevent browser-level smooth scroll on mobile to avoid jumpy address-bar collapse */
+@media (max-width: 640px){
+  html { scroll-behavior: auto !important; }
+  body { overscroll-behavior-y: contain; }
+}
+
 </style>
 <script>
    // Smooth scroll for same-page links
@@ -238,7 +245,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 @media (max-width: 520px){
   .map-actions-simple{gap:10px}
-}</style></head>
+}</style>
+<script>
+try { if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; } } catch(e){}
+</script>
+
+</head>
 <body data-gr-ext-installed="" data-new-gr-c-s-check-loaded="14.1120.1">
 <nav aria-label="Primary" class="top">
 <div class="container">
@@ -658,12 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // On load, if there's a hash, offset scroll
-  window.addEventListener('load', function(){
-    if (location.hash){ 
-      // Delay a tick to ensure layout is final (e.g., webfonts/images)
-      setTimeout(() => handleHashNavigation(location.hash), 100);
-    }
-  });
+  // [patched] removed auto hash scroll on load to prevent mobile auto-scroll
 
   // Also handle back/forward navigation changing the hash
   window.addEventListener('hashchange', function(){
@@ -693,6 +700,7 @@ document.addEventListener('DOMContentLoaded', () => {
         content: attr(data-content);
       }
     
+/* === Burger menu SVG (Option 2) — added by ChatGPT === */
 .mobile-menu-toggle{
   width: 44px;             /* Apple HIG touch target */
   height: 44px;
@@ -721,4 +729,3 @@ document.addEventListener('DOMContentLoaded', () => {
 /* === Burger lines color override === */
 .mobile-menu-toggle svg rect{ fill:#ffffff; }
 </style><div aria-label="grammarly-integration" class="grammarly-desktop-integration" data-content='{"mode":"limited","isActive":false,"isUserDisabled":false}' role="group" tabindex="-1"></div></template></grammarly-desktop-integration></html>
-
