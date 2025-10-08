@@ -2,7 +2,7 @@
 
 <!-- saved from url=(0037)https://ashley-pettit.github.io/JonQ/ -->
 <html lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>
    Dr Jonathan Quinn - Director of Orthopaedics | Orthopaedic Surgeon
   </title>
@@ -84,7 +84,7 @@
     .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .12em; }
     .value { font-size: 15px; }
 
-    footer { max-width: 1100px; margin: 0 auto 50px; padding: 0 12px; color: var(--muted);  text-align: center;}
+    footer { max-width: 1100px; margin: 0 auto 30px; padding: 0 12px; color: var(--muted);  text-align: center;}
     .foot { display: flex; align-items: center; justify-content: center; border-top: 1px solid rgba(148,163,184,.15); padding-top: 18px; margin-top: 28px; }
     .logos { display: flex; gap: 12px; align-items: center; }
     .logo-pill { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(148,163,184,.25); background:#0b1224; font-size:12px; color:#cbd5e1; }
@@ -148,6 +148,44 @@
   .mobile-menu-toggle { display: inline-flex; } /* show toggle on mobile */
   /* .mobile-menu.show handled below or already present */
 }
+
+/* --- Ashley request: make burger lines slightly thicker (mobile) --- */
+@media (max-width: 640px){
+  .mobile-menu-toggle { font-weight: 900; }
+}
+
+
+/* --- Ashley request: add 5px space under "View locations" button on mobile --- */
+@media (max-width: 640px){
+  .btn.view-locations { margin-bottom: 5px !important; }
+}
+
+
+/* Mobile-only: add space ABOVE the 'View location(s)' button */
+@media (max-width: 640px){
+  .btn.view-locations { margin-top: 5px !important; display: inline-block; }
+}
+
+
+/* Mobile-only: 5px left margin on hero */
+@media (max-width: 640px){
+  .hero, .hero-section, .hero__section, .hero-banner, #hero, [data-hero], section[aria-label*="hero" i] {
+    margin-left: 5px !important;
+  }
+}
+
+
+/* Mobile zoom normalization */
+@media (max-width: 640px){
+  :root { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+}
+
+
+/* Footer credit fix: center and keep on one line */
+.credit-center { text-align: center !important; }
+.credit-nowrap { white-space: nowrap !important; }
+footer .site-credit { text-align: center !important; white-space: nowrap !important; display: block; }
+
 </style>
 <script>
    // Smooth scroll for same-page links
@@ -295,11 +333,11 @@ document.addEventListener('DOMContentLoaded', () => {
 </section>
 </main>
 <footer aria-labelledby="h-contact" id="contact">
-<section class="card" style="text-align:left;">
+<section class="card" style="text-align:left; margin-top:-20px">
 <h2 id="h-contact">
      Contact &amp; Referrals
     </h2>
-<p style="padding-bottom:5px;">
+<p style="">
      For appointments or referrals, please contact the consulting rooms at Queen Elizabeth II Jubilee Hospital (QLD).<br/></p>
 <a aria-label="View locations" class="btn" href="#locations">
       View location
@@ -406,7 +444,89 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
   </script>
-</footer></body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+</footer>
+<script>
+// Tag any .btn that reads "View locations" so mobile CSS can apply margin-bottom
+document.addEventListener('DOMContentLoaded', function(){
+  if (window.matchMedia('(max-width: 640px)').matches) {
+    document.querySelectorAll('a.btn, button.btn').forEach(function(el){
+      var txt = (el.textContent || '').trim().toLowerCase();
+      if (txt.includes('view locations')) {
+        el.classList.add('view-locations');
+      }
+    });
+  }
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    var isMobile = window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+    var nodes = document.querySelectorAll('a, button, .btn');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      var txt = (el.textContent || '').trim().toLowerCase();
+      if (!txt) continue;
+      if (txt.includes('view location')) { // matches "View location" and "View locations"
+        el.classList.add('view-locations');
+        if (isMobile) {
+          // Ensure there's a spacer <br> immediately BEFORE the button for guaranteed vertical space
+          var prev = el.previousSibling;
+          var needBR = true;
+          while (prev && prev.nodeType === 3 && !prev.textContent.trim()) prev = prev.previousSibling; // skip blanks
+          if (prev && prev.nodeType === 1 && prev.tagName === 'BR') needBR = false;
+          if (needBR) {
+            var br = document.createElement('br');
+            el.parentNode.insertBefore(br, el);
+          }
+        }
+      }
+    }
+  } catch(e){ /* no-op */ }
+});
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    var footer = document.querySelector('footer') || document.body;
+    if (!footer) return;
+    // Look for an element containing both "built by" and "CareConnect" (case-insensitive)
+    var nodes = footer.querySelectorAll('*');
+    var target = null;
+    for (var i=0; i<nodes.length; i++){
+      var t = (nodes[i].innerText || '').toLowerCase();
+      if (t.includes('built by') && t.includes('careconnect')) { target = nodes[i]; break; }
+    }
+    if (!target) {
+      // fallback: search whole document
+      nodes = document.querySelectorAll('*');
+      for (var j=0; j<nodes.length; j++){
+        var t2 = (nodes[j].innerText || '').toLowerCase();
+        if (t2.includes('built by') && t2.includes('careconnect')) { target = nodes[j]; break; }
+      }
+    }
+    if (target){
+      // Normalize innerHTML: remove <br> between "built by" and "CareConnect" and collapse spaces
+      var html = target.innerHTML;
+      html = html.replace(/(built\s*by)\s*<br[^>]*>\s*(careconnect)/ig, '$1 $2');
+      html = html.replace(/\s+/g, ' '); // collapse multiple spaces/newlines
+      // Also fix accidental double-space before CareConnect if present
+      html = html.replace(/built by\s+careconnect/ig, 'built by CareConnect');
+      target.innerHTML = html.trim();
+      // Apply centering + no-wrap
+      target.classList.add('credit-center', 'credit-nowrap');
+      // If there's a dedicated credit container, tag it
+      if (target.classList.contains('site-credit') === false) target.classList.add('site-credit');
+    }
+  } catch(e){ /* no-op */ }
+});
+</script>
+
+</body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
       div.grammarly-desktop-integration {
         position: absolute;
         width: 1px;
