@@ -2,7 +2,7 @@
 
 <!-- saved from url=(0037)https://ashley-pettit.github.io/JonQ/ -->
 <html lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>
    Dr Jonathan Quinn - Director of Orthopaedics | Orthopaedic Surgeon
   </title>
@@ -177,6 +177,14 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
 .mobile-menu-toggle svg rect,
 .mobile-menu-toggle svg path,
 .mobile-menu-toggle svg line{fill:#fff !important; stroke:#fff !important;}
+
+/* --- Anti-zoom & tap behavior guards (mobile) --- */
+@media (max-width: 640px){
+  html, body { touch-action: manipulation; }
+  /* Prevent iOS text auto-resize changing layout unexpectedly */
+  :root { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+}
+
 </style>
 <script>
    // Smooth scroll for same-page links
@@ -520,6 +528,66 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
+
+<script>
+// --- Close burger menu on interactions ---
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.querySelector('.mobile-menu-toggle');
+  const menu = document.getElementById('mobileMenu');
+
+  if (!toggle || !menu) return;
+
+  // Close when any link inside the mobile menu is tapped/clicked
+  menu.addEventListener('click', (e) => {
+    const target = e.target;
+    if (target && target.matches('a')) {
+      menu.classList.remove('show');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close when clicking/tapping outside the menu or toggle
+  document.addEventListener('click', (e) => {
+    if (!menu.classList.contains('show')) return;
+    const clickedInsideMenu = menu.contains(e.target);
+    const clickedToggle = toggle.contains(e.target);
+    if (!clickedInsideMenu && !clickedToggle) {
+      menu.classList.remove('show');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  }, true);
+
+  // Close on ESC key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu.classList.contains('show')) {
+      menu.classList.remove('show');
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.focus && toggle.focus();
+    }
+  });
+});
+
+// --- Block pinch-zoom and double-tap zoom on iOS/Android ---
+// Prevent multi-touch zoom (pinch)
+(function(){
+  let lastTouchEnd = 0;
+
+  // Block gesture (iOS Safari)
+  ['gesturestart','gesturechange','gestureend'].forEach(evt => {
+    document.addEventListener(evt, function(e){ e.preventDefault(); }, { passive: false });
+  });
+
+  // Block double-tap zoom
+  document.addEventListener('touchend', function (e) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+})();
+</script>
+
 </body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
       div.grammarly-desktop-integration {
         position: absolute;
@@ -570,4 +638,3 @@ document.addEventListener('DOMContentLoaded', function(){
 /* === Burger lines color override === */
 .mobile-menu-toggle svg rect{ fill:#ffffff; }
 </style><div aria-label="grammarly-integration" class="grammarly-desktop-integration" data-content='{"mode":"limited","isActive":false,"isUserDisabled":false}' role="group" tabindex="-1"></div></template></grammarly-desktop-integration></html>
-
