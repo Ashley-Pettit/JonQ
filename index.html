@@ -197,10 +197,9 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
 }
 
 
-/* Prevent browser-level smooth scroll on mobile to avoid jumpy address-bar collapse */
+/* Avoid :target jumps styling on mobile (prevents layout nudges) */
 @media (max-width: 640px){
-  html { scroll-behavior: auto !important; }
-  body { overscroll-behavior-y: contain; }
+  :target { scroll-margin-top: 88px; }
 }
 
 </style>
@@ -245,12 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 @media (max-width: 520px){
   .map-actions-simple{gap:10px}
-}</style>
-<script>
-try { if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; } } catch(e){}
-</script>
-
-</head>
+}</style></head>
 <body data-gr-ext-installed="" data-new-gr-c-s-check-loaded="14.1120.1">
 <nav aria-label="Primary" class="top">
 <div class="container">
@@ -665,16 +659,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // Allow menu code to run (closing), but prevent default browser jump so we can offset
     e.preventDefault();
     // Update the URL hash without immediate jump
-    history.pushState(null, '', hash);
     handleHashNavigation(hash);
   });
 
   // On load, if there's a hash, offset scroll
-  // [patched] removed auto hash scroll on load to prevent mobile auto-scroll
+  window.addEventListener('load', function(){
+    if (location.hash){ 
+      // Delay a tick to ensure layout is final (e.g., webfonts/images)
+      setTimeout(() => handleHashNavigation(location.hash), 100);
+    }
+  });
 
   // Also handle back/forward navigation changing the hash
   window.addEventListener('hashchange', function(){
     handleHashNavigation(location.hash);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function getHeaderOffset(){
+    let maxH = 0;
+    const all = document.body.getElementsByTagName("*");
+    for (let i=0;i<all.length;i++){
+      const el = all[i];
+      const cs = getComputedStyle(el);
+      if ((cs.position === 'fixed' || cs.position === 'sticky')){
+        const topVal = parseFloat(cs.top || '0');
+        if (!isNaN(topVal) && topVal <= 0){
+          const h = el.getBoundingClientRect().height;
+          if (h > maxH) maxH = h;
+        }
+      }
+    }
+    if (window.matchMedia('(max-width: 640px)').matches){
+      maxH = Math.max(maxH, 64);
+    }
+    return maxH + 8;
+  }
+
+  function smoothScrollToTarget(target){
+    if (!target) return;
+    const offset = getHeaderOffset();
+    const rect = target.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset;
+    const y = Math.max(absoluteTop - offset, 0);
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
+  // Intercept in-page links and scroll without storing #hash
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const hash = a.getAttribute('href');
+    if (!hash || hash === '#') return;
+    const id = decodeURIComponent(hash.slice(1));
+    const target = document.getElementById(id);
+    if (!target) return;
+    e.preventDefault();
+    smoothScrollToTarget(target);
+
+    // On mobile only, ensure no hash in URL after the click
+    if (window.matchMedia('(max-width: 640px)').matches){
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
+    }
+  }, true);
+
+  // On initial load on mobile, if a hash exists (from a previous visit),
+  // clear it and scroll to top to avoid remembered-scroll behavior.
+  window.addEventListener('load', function(){
+    if (window.matchMedia('(max-width: 640px)').matches && location.hash){
+      try { history.replaceState(null, '', window.location.pathname + window.location.search); } catch(e){}
+      window.scrollTo(0,0);
+    }
   });
 })();
 </script>
