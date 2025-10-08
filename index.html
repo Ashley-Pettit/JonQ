@@ -185,6 +185,13 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
   :root { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 }
 
+
+/* --- Mobile header offset for in-page anchors (CSS fallback) --- */
+@media (max-width: 640px){
+  /* Give anchor targets a top margin when scrolled into view */
+  [id] { scroll-margin-top: 88px; }
+}
+
 </style>
 <script>
    // Smooth scroll for same-page links
@@ -585,6 +592,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     lastTouchEnd = now;
   }, { passive: false });
+})();
+</script>
+
+
+<script>
+(function(){
+  function getHeaderOffset(){
+    // Find tallest fixed/sticky element at top (likely the mobile header)
+    let maxH = 0;
+    const all = document.body.getElementsByTagName("*");
+    for (let i=0;i<all.length;i++){
+      const el = all[i];
+      const cs = getComputedStyle(el);
+      if ((cs.position === 'fixed' || cs.position === 'sticky')){
+        const topVal = parseFloat(cs.top || '0');
+        // treat near-top as header
+        if (!isNaN(topVal) && topVal <= 0){
+          const h = el.getBoundingClientRect().height;
+          if (h > maxH) maxH = h;
+        }
+      }
+    }
+    // Provide a reasonable minimum on mobile
+    if (window.matchMedia('(max-width: 640px)').matches){
+      maxH = Math.max(maxH, 64);
+    }
+    // Add a little breathing room
+    return maxH + 8;
+  }
+
+  function smoothScrollToTarget(target){
+    if (!target) return;
+    const offset = getHeaderOffset();
+    const rect = target.getBoundingClientRect();
+    const absoluteTop = rect.top + window.pageYOffset;
+    const y = Math.max(absoluteTop - offset, 0);
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  }
+
+  function handleHashNavigation(hash){
+    if (!hash) return;
+    const id = hash.replace(/^#/, '');
+    const target = document.getElementById(id);
+    if (target){ smoothScrollToTarget(target); }
+  }
+
+  // Intercept clicks on in-page anchors anywhere in the document
+  document.addEventListener('click', function(e){
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const url = new URL(a.href, window.location.href);
+    const hash = url.hash;
+    if (!hash || hash === '#') return;
+    // Allow menu code to run (closing), but prevent default browser jump so we can offset
+    e.preventDefault();
+    // Update the URL hash without immediate jump
+    history.pushState(null, '', hash);
+    handleHashNavigation(hash);
+  });
+
+  // On load, if there's a hash, offset scroll
+  window.addEventListener('load', function(){
+    if (location.hash){ 
+      // Delay a tick to ensure layout is final (e.g., webfonts/images)
+      setTimeout(() => handleHashNavigation(location.hash), 100);
+    }
+  });
+
+  // Also handle back/forward navigation changing the hash
+  window.addEventListener('hashchange', function(){
+    handleHashNavigation(location.hash);
+  });
 })();
 </script>
 
