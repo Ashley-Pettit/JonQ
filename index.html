@@ -2,7 +2,7 @@
 
 <!-- saved from url=(0037)https://ashley-pettit.github.io/JonQ/ -->
 <html lang="en"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <title>
    Dr Jonathan Quinn - Director of Orthopaedics | Orthopaedic Surgeon
   </title>
@@ -201,6 +201,21 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
 }
 /* Prevent body scroll jump when menu open (simple approach without locking) */
 body.menu-open{ overscroll-behavior: contain; }
+
+
+/* === Mobile Zoom Guards === */
+html, body { overflow-x: hidden; -webkit-text-size-adjust: 100%; }
+a, button, .mobile-menu-toggle { touch-action: manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+img, svg, canvas, video { max-width: 100%; height: auto; }
+@supports (-webkit-touch-callout: none) {
+  /* Prevent iOS input focus zoom */
+  input, select, textarea { font-size: 16px; }
+}
+/* Make common tap targets comfortably large to avoid iOS zoom */
+button, .btn, .mobile-menu-toggle { min-height: 44px; line-height: 1.2; }
+.nav a { min-height: 44px; display: inline-flex; align-items: center; }
+/* Clamp any rogue widths */
+*[data-viewport-clamp], .viewport-clamp { max-width: 100vw !important; overflow-x: hidden !important; }
 
 </style>
 <script>
