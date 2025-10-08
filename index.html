@@ -177,6 +177,31 @@ footer .site-credit { text-align: center !important; white-space: nowrap !import
 .mobile-menu-toggle svg rect,
 .mobile-menu-toggle svg path,
 .mobile-menu-toggle svg line{fill:#fff !important; stroke:#fff !important;}
+
+/* === Mobile menu performance tweaks === */
+.mobile-menu-toggle{ touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+#mobileMenu{
+  position: fixed; top: 0; right: 0; bottom: 0; width: 82vw; max-width: 320px;
+  transform: translate3d(100%,0,0); opacity: 0;
+  pointer-events: none;
+  transition: transform .18s ease-out, opacity .18s ease-out;
+  will-change: transform, opacity;
+  backface-visibility: hidden; contain: content;
+  /* Keep shadows light; avoid filters that trigger heavy compositing */
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+  -webkit-overflow-scrolling: touch;
+}
+#mobileMenu.show{
+  transform: translate3d(0,0,0); opacity: 1; pointer-events: auto;
+}
+/* Avoid layout jank while animating */
+#mobileMenu *{ transform: translateZ(0); }
+@media (prefers-reduced-motion: reduce){
+  #mobileMenu{ transition: none !important; }
+}
+/* Prevent body scroll jump when menu open (simple approach without locking) */
+body.menu-open{ overscroll-behavior: contain; }
+
 </style>
 <script>
    // Smooth scroll for same-page links
